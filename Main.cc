@@ -53,10 +53,11 @@ int main(int argc,char** argv){
     /////////////////////////////////////
     MyDetectorConstruction* detConstruction = new MyDetectorConstruction();
     /////////////////////////////////////
+    G4String MyFileName = "data/detector_data.txt";
 
     //actionInit
     /////////////////////////////////////
-    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 1. / flux));
+    runManager->SetUserInitialization(new ActionInitialization(detConstruction, MyFileName));
     /////////////////////////////////////
 
     
@@ -77,15 +78,15 @@ int main(int argc,char** argv){
     
     G4UImanager* UImanager = G4UImanager::GetUIpointer();
     
-    //runManager->Initialize();
-    UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
+    runManager->Initialize();
+    //UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
 
     if(ui){
         UImanager->ApplyCommand("/control/execute vis.mac");
         ui->SessionStart();
     }else{
-        //UImanager->ApplyCommand("/run/initialize");
-        //UImanager->ApplyCommand("/run/beamOn " + std::to_string(N));
+        UImanager->ApplyCommand("/run/initialize");
+        UImanager->ApplyCommand("/run/beamOn " + std::to_string(N));
     }
     delete runManager;
     return 0;

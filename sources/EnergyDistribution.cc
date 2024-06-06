@@ -18,6 +18,8 @@ MyEnergyDistribution::MyEnergyDistribution(){
             Probability.push_back(fProb); 
              
         }
+    }else{
+        std::cout << "Err with EnergyDist file" << '\n';
     }
     in.close();
 }

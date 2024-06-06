@@ -13,11 +13,11 @@
 #include "construction.hh"
 
 const G4double Ti = 26.2; // keV
-const int is_DT = 0;
+const int is_DT = 1;
 const int is_MySpect = 0;
 //const G4double K = 0.05;
 
-//std::vector<G4double> GetEnergyDes();
+
 
 class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
     public:
