@@ -16,7 +16,7 @@
 
 
 ////////////////////////
-#include "QGSP_BERT_HP.hh"
+#include "QGSP_BIC_HP.hh"
 ////////////////////////
 
 
@@ -26,18 +26,21 @@ int Vis = 1;
 
 //new coments to git 
 
+G4double flux = 10000.0;
+G4double tau = 0.1;
+G4int N = (G4int)(flux * tau);
 
 int main(int argc,char** argv){
     //Random ivents
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
-    CLHEP::HepRandom::setTheSeed(time(NULL));
+    CLHEP::HepRandom::setTheSeed(int(time(NULL)));
     //
 
     //
     //Construct	the	run	manager	
     #ifdef G4MULTITHREADED
         G4MTRunManager* runManager = new G4MTRunManager;
-        runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores()-1);
+        runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
     #else
         G4RunManager* runManager = new G4RunManager;
     #endif
@@ -45,7 +48,7 @@ int main(int argc,char** argv){
     
     //phys
     /////////////////////////////////////
-    G4VModularPhysicsList* physicsList = new QGSP_BERT_HP;
+    G4VModularPhysicsList* physicsList = new QGSP_BIC_HP;
     runManager->SetUserInitialization(physicsList);
     /////////////////////////////////////
 
