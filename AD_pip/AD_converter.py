@@ -156,7 +156,7 @@ def AddToHist(Particles):
         #add Energy in Hist
         #tmp - index for all
         size_all = len(Particles)
-        while((Particles[tmp] <= bin_next)and(size_all - 1 > tmp)):
+        while((size_all - 1 > tmp)and(Particles[tmp] <= bin_next)):
             amount += 1 #add particle in column
             tmp += 1 #go to next particle
         
