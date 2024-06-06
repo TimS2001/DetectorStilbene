@@ -207,3 +207,13 @@ build/.cmake/api/v1/reply/target-Main-RelWithDebInfo-86d4c5d1fe0033ccd5fc.json
 .gitignore
 data/detector_data.txt
 data/detector_data.txt
+build/.cmake/api/v1/reply/codemodel-v2-46e239770456391f4847.json
+build/.cmake/api/v1/reply/index-2024-06-06T13-31-13-0673.json
+build/.cmake/api/v1/reply/target-DetectorStilbene-Debug-186239dcfd993767f010.json
+build/.cmake/api/v1/reply/target-DetectorStilbene-MinSizeRel-186239dcfd993767f010.json
+build/.cmake/api/v1/reply/target-DetectorStilbene-Release-186239dcfd993767f010.json
+build/.cmake/api/v1/reply/target-DetectorStilbene-RelWithDebInfo-186239dcfd993767f010.json
+build/.cmake/api/v1/reply/target-Main-Debug-2341ca1f829ce0f046ad.json
+build/.cmake/api/v1/reply/target-Main-MinSizeRel-58d8a7b3cdf53501de51.json
+build/.cmake/api/v1/reply/target-Main-Release-693e8f493a745dc8a698.json
+build/.cmake/api/v1/reply/target-Main-RelWithDebInfo-1eb43f06ce57fff11bfa.json

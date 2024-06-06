@@ -9,7 +9,7 @@
 #include "G4UIExecutive.hh"
 
 ////////////////////////
-#include "construction.hh"
+#include "Construction.hh"
 #include "ActionInitialization.hh"
 
 #include "G4VPhysicalVolume.hh"

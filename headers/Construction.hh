@@ -35,7 +35,7 @@ class MyDetectorConstruction: public G4VUserDetectorConstruction{
 
     //constants
     G4double l = 4 * cm;
-    G4double M = 15 * l; //100. * cm;
+    G4double M = 100 * cm; //100. * cm;
     G4ThreeVector scalesWorld = G4ThreeVector(M / 2, M / 2, M); 
     G4double detIR = 0.*cm;        // cylinder inner radius
     G4double detOR = l / 2;        // cylinder outer radius
@@ -52,3 +52,4 @@ class MyDetectorConstruction: public G4VUserDetectorConstruction{
 
 
 #endif
+

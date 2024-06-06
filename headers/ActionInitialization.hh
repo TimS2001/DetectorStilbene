@@ -2,7 +2,7 @@
 #define ACTIONINITIALIZATION_HH
 
 #include "G4VUserActionInitialization.hh"
-#include "Construction.hh"
+#include "construction.hh"
 #include "RunAction.hh"
 #include "Parameters.hh" 
 
