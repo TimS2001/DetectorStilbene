@@ -22,7 +22,7 @@
 
 
 //Is visual working
-int Vis = 1;
+int Vis = 0;
 
 //new coments to git 
 
@@ -60,7 +60,7 @@ int main(int argc,char** argv){
 
     //actionInit
     /////////////////////////////////////
-    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 0.1));
+    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 1./ flux));
     /////////////////////////////////////
 
 
@@ -92,11 +92,8 @@ int main(int argc,char** argv){
         ui->SessionStart();
         
     }else{
-        /*
-        UImanager->ApplyCommand("/control/execute run.mac");
-        */
         UImanager->ApplyCommand("/run/initialize");
-        UImanager->ApplyCommand("/run/beamOn 100000");
+        UImanager->ApplyCommand("/run/beamOn " + std::to_string(N));
     }
     //////////////////////////
     delete runManager;
