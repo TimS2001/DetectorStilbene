@@ -12,7 +12,7 @@ void MyEventAction::BeginOfEventAction(const G4Event*){
 
     //reset energy to calc for new neutron
     MyRun* runData = static_cast<MyRun*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-    runData->UpdateGlobalTime(fTau);
+    runData->UpdateGlobalTime(1.0);
 }
 
 

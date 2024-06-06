@@ -8,7 +8,8 @@
 
 class MyEventAction : public G4UserEventAction{
 public:
-  MyEventAction() {
+  MyEventAction(G4double tau) {
+    fTau = tau;
   }
   ~MyEventAction() = default;
 
@@ -18,9 +19,9 @@ public:
   
 
 private:
-  G4double fTau = 1.;
+  G4double fTau = 0.;
+  
+
 };
 
 #endif
-
-

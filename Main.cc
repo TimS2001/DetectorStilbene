@@ -1,3 +1,4 @@
+
 #include <iostream>
 
 
@@ -8,36 +9,35 @@
 #include "G4UIExecutive.hh"
 
 ////////////////////////
-#include "Construction.hh"
+#include "construction.hh"
 #include "ActionInitialization.hh"
 
 #include "G4VPhysicalVolume.hh"
 
 
 ////////////////////////
-#include "QGSP_BIC_HP.hh"
-//#include "G4GenericBiasingPhysics.hh"
+#include "QGSP_BERT_HP.hh"
 ////////////////////////
+
 
 
 //Is visual working
 int Vis = 1;
 
-G4double flux = 10000.0;
-G4double tau = 0.1;
-G4int N = (G4int)(flux * tau);
+//new coments to git 
+
 
 int main(int argc,char** argv){
     //Random ivents
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
-    CLHEP::HepRandom::setTheSeed(int(time(NULL)));
+    CLHEP::HepRandom::setTheSeed(time(NULL));
     //
 
     //
     //Construct	the	run	manager	
     #ifdef G4MULTITHREADED
         G4MTRunManager* runManager = new G4MTRunManager;
-        runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
+        runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores()-1);
     #else
         G4RunManager* runManager = new G4RunManager;
     #endif
@@ -45,21 +45,24 @@ int main(int argc,char** argv){
     
     //phys
     /////////////////////////////////////
-    G4VModularPhysicsList* physicsList = new QGSP_BIC_HP;
+    G4VModularPhysicsList* physicsList = new QGSP_BERT_HP;
     runManager->SetUserInitialization(physicsList);
     /////////////////////////////////////
 
     //detector
     /////////////////////////////////////
     MyDetectorConstruction* detConstruction = new MyDetectorConstruction();
+    runManager->SetUserInitialization(detConstruction);
     /////////////////////////////////////
-    G4String MyFileName = "data/detector_data.txt";
 
     //actionInit
     /////////////////////////////////////
-    runManager->SetUserInitialization(new ActionInitialization(detConstruction, MyFileName));
+    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 0.1));
     /////////////////////////////////////
 
+
+    
+    
     
     
     /////////////////////////////////////
@@ -79,15 +82,21 @@ int main(int argc,char** argv){
     G4UImanager* UImanager = G4UImanager::GetUIpointer();
     
     runManager->Initialize();
-    //UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
+    UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
 
     if(ui){
         UImanager->ApplyCommand("/control/execute vis.mac");
         ui->SessionStart();
+        
     }else{
+        /*
+        UImanager->ApplyCommand("/control/execute run.mac");
+        */
         UImanager->ApplyCommand("/run/initialize");
-        UImanager->ApplyCommand("/run/beamOn " + std::to_string(N));
+        UImanager->ApplyCommand("/run/beamOn 100000");
     }
+    //////////////////////////
     delete runManager;
+    
     return 0;
 }

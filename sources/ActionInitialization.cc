@@ -7,20 +7,13 @@
 
 
 
-ActionInitialization::ActionInitialization(MyDetectorConstruction* Det, G4String fileName)
+ActionInitialization::ActionInitialization(MyDetectorConstruction* Det, G4double tau)//, G4String fileName)
 {
     fDetVolume = Det;
     fdata = new std::vector<std::vector<MyMainData*>*>();
-    fFileName = fileName;
+    fTau = tau;
 }
 
-ActionInitialization::~ActionInitialization(){
-    size_t size = fdata->size();
-    for(int i = 0; i < size; i++){
-        fdata->at(i)->clear();
-    }
-    fdata->clear();
-}
 
 void ActionInitialization::Build() const {
     MyPrimaryGenerator *generator = new MyPrimaryGenerator(fDetVolume);
@@ -29,7 +22,7 @@ void ActionInitialization::Build() const {
     MyRunAction* runAction = new MyRunAction(fdata);
     SetUserAction(runAction);
 
-    MyEventAction *eventAction = new MyEventAction(); 
+    MyEventAction *eventAction = new MyEventAction(fTau); 
     SetUserAction(eventAction);
 
     SetUserAction(new MySteppingAction(fDetVolume));

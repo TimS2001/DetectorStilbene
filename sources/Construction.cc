@@ -18,7 +18,6 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
     G4PVPlacement* fContainerPV1 = new G4PVPlacement(0, DetectorPosition,  LogicContainerVolume1, "physContainer1", LogicWorld, false, 0, checkOverlaps);
     G4PVPlacement* fContainerPV2 = new G4PVPlacement(0, Cont2,  LogicContainerVolume2, "physContainer2", LogicWorld, false, 0, checkOverlaps);
     G4PVPlacement* fContainerPV3 = new G4PVPlacement(0, Cont3,  LogicContainerVolume2, "physContainer3", LogicWorld, false, 0, checkOverlaps);
-    
     physDetector = new G4PVPlacement(0, DetectorPosition, LogicDetectorVolume, "physDetector", LogicWorld, false, 0, checkOverlaps);
 
 
