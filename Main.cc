@@ -1,3 +1,4 @@
+
 #include <iostream>
 
 
@@ -16,12 +17,14 @@
 
 ////////////////////////
 #include "QGSP_BIC_HP.hh"
-//#include "G4GenericBiasingPhysics.hh"
 ////////////////////////
 
 
+
 //Is visual working
-int Vis = 1;
+int Vis = 0;
+
+//new coments to git 
 
 G4double flux = 10000.0;
 G4double tau = 0.1;
@@ -52,13 +55,17 @@ int main(int argc,char** argv){
     //detector
     /////////////////////////////////////
     MyDetectorConstruction* detConstruction = new MyDetectorConstruction();
+    runManager->SetUserInitialization(detConstruction);
     /////////////////////////////////////
 
     //actionInit
     /////////////////////////////////////
-    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 1. / flux));
+    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 1./ flux));
     /////////////////////////////////////
 
+
+    
+    
     
     
     /////////////////////////////////////
@@ -77,16 +84,19 @@ int main(int argc,char** argv){
     
     G4UImanager* UImanager = G4UImanager::GetUIpointer();
     
-    //runManager->Initialize();
+    runManager->Initialize();
     UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
 
     if(ui){
         UImanager->ApplyCommand("/control/execute vis.mac");
         ui->SessionStart();
+        
     }else{
-        //UImanager->ApplyCommand("/run/initialize");
-        //UImanager->ApplyCommand("/run/beamOn " + std::to_string(N));
+        UImanager->ApplyCommand("/run/initialize");
+        UImanager->ApplyCommand("/run/beamOn " + std::to_string(N));
     }
+    //////////////////////////
     delete runManager;
+    
     return 0;
 }
