@@ -3,10 +3,3 @@ pictures/
 pictures_disc/
 build/
 .vscode/
-
-"git.ignoredRepositories": [
-  "build"
-  "data"
-  "pictures"
-  "pictures_disc"
-]
