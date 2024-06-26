@@ -26,7 +26,7 @@ int Vis = 0;
 
 //new coments to git 
 
-G4double flux = 1.e7 / s;
+G4double flux = 5.e6 / s;
 G4double tau = 0.1 * s;
 G4int N = (G4int)(flux * tau);
 
