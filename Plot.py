@@ -1,12 +1,13 @@
 import AD_pip.AD_converter as conv
 import AD_pip.Plotting as plot
-import AD_pip.Light as LGHT
+import AD_pip.Analysis as anl
 import numpy as np
 
 str = 'data/detector_data.txt'   
 
 Hist = conv.ReadAndBlur(str)
-Hist1 = LGHT.ReadAndBlur(str)
+Hist1 = anl.Convert_To_Energy(Hist)
+#Hist1 = LGHT.ReadAndBlur(str)
 
 
 '''

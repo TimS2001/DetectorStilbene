@@ -1,13 +1,31 @@
-import numpy as np
-from numpy import genfromtxt
 import math
+import numpy as np
 from scipy.integrate import quad
 
-from AD_pip.Constants import BIN_E, MAX_E, MIN_E, EPS, ENERGY_ID, AMOUNT_ID, LEN
+from AD_pip.Constants import LIGHT_ID, AMOUNT_ID, LEN, BIN_L, MAX_L, MIN_L, B, pw
 
+def ConvLight(E):
+    return B * (E ** pw)
 
+def underE(L):
+    pw1 = 1 / pw
+    B1 = math.pow(B, -1. / pw)
+    return B1 * math.pow(L, pw1)
 
-#adition func
+def GetResolution(L):
+    if(L <= 0):
+        return 0
+        #exeption
+    
+    
+    L1 = math.pow(L, 1.5 / pw)
+    B1 = 126 * math.pow(B, 1.5 / pw)
+
+    L2 = math.pow(L, 3 / pw)
+    B2 = 81 * math.pow(B, 3 / pw)
+
+    Y = math.sqrt(14.29 + B1 / L1 + B2 / L2 ) / 100
+    return  Y
 
 #Функция гаусса нормированнная для ДИСПЕРСИИ
 def Gauss(Ex, sigma):
@@ -17,46 +35,19 @@ def Gauss(Ex, sigma):
         return k * math.exp(s * (x - Ex)*(x - Ex))
     return f
 
-
-
-#Функция для чтения гистограммы из файла str
-def readHist(str):
-    Hist = np.genfromtxt(str)
-    return Hist
-
-###############
-#lineral's func 
-#Функция возращающая разрешение детектора для конкретной энергии в МэВ
-def GetResolution(X):
-    if(X <= 0):
-        return 0
-        #exeption
-    
-    #L = 1.549 * (X ** 1.5)
-    #Y = math.sqrt(14.29 + 195 / L + 1.35 / L / L) / 100
-    
-    Y = math.sqrt(14.29 + 126 / (X ** 1.5) + 81 / (X ** 3)) / 100
-    return  Y
-
-
-
-######################
-#AD func
-
-#func to blur by Gauss
 #Функция размытия по гауссу
 #Нужна чтобы учтиывать разрешающую способность детектора
 def Blur(Hist):
 
-    N = len(Hist[ENERGY_ID])
+    N = len(Hist[LIGHT_ID])
 
     #make Hist's copy
-    HistBlur = np.array([Hist[ENERGY_ID], np.zeros(N)])
+    HistBlur = np.array([Hist[LIGHT_ID], np.zeros(N)])
 
     #get i bin in Hist 
     #calc contribution in HistBlur
     for i in range(0, N):
-        bin_now = Hist[ENERGY_ID][i]
+        bin_now = Hist[LIGHT_ID][i]
         amount_now = Hist[AMOUNT_ID][i]
 
 
@@ -69,7 +60,7 @@ def Blur(Hist):
             #find contribution's bin
             #99% in 3*sigma
             #number bins for blur by current step
-            n = int(3. * sigma / BIN_E)
+            n = int(3. * sigma / BIN_L)
 
             if(n > 1):
 
@@ -90,8 +81,8 @@ def Blur(Hist):
                 #blur_vec
                 for m in range(min_, max_):
                     #calc sum of 3 points
-                    x0 = m * BIN_E
-                    x2 = (m + 1) * BIN_E
+                    x0 = m * BIN_L
+                    x2 = (m + 1) * BIN_L
                     
                     f = quad(Gauss(bin_now, sigma), x0, x2)
                     
@@ -116,11 +107,11 @@ def Blur(Hist):
 
 #Функция преобразования данных по энергии частиц в гистограмму
 def AddToHist(Particles):
-    bin_ = BIN_E
-    max_ = MAX_E
+    bin_ = BIN_L
+    max_ = MAX_L
     N = int(max_ / bin_)
     
-    Energy = []
+    Light = []
     Amount = []
     
     tmp = 0
@@ -128,10 +119,10 @@ def AddToHist(Particles):
     for i in range(0, N):
 
         bin_now = (i + 0.5) * bin_#bin_now
-        bin_next = (i + 1.) * bin_#maxs Energy of bin_now
+        bin_next = (i + 1.) * bin_#maxs Light of bin_now
         amount = 0
 
-        #add Energy in Hist
+        #add Light in Hist
         #tmp - index for all
         size_all = len(Particles)
         while((size_all - 1 > tmp)and(Particles[tmp] <= bin_next)):
@@ -139,18 +130,25 @@ def AddToHist(Particles):
             tmp += 1 #go to next particle
         
         #add bin
-        Energy.append(bin_now)
+        Light.append(bin_now)
         Amount.append(amount)
-    Energy = np.array(Energy, EPS)
-    Amount = np.array(Amount, EPS)
-    Hist = Blur(np.array([Energy, Amount]))
+    Light = np.array(Light)
+    Amount = np.array(Amount)
+    i = 0 
+    while(Light[i] < MIN_L):
+        Amount[i] = 0
+        i += 1
+
+    Hist = Blur(np.array([Light, Amount]))
+
+    
 
     return Hist
+
 
 #Основная функция считывающая данные из файла
 #Далее происходит Аналогово-Цифорвое преобразование данные в гистограмму с заданным разрешением детектора
 def ReadAndBlur(str):
-
     once = []
     twice = []
     triple = []
@@ -159,19 +157,14 @@ def ReadAndBlur(str):
     f = open(str, 'r')
     
     interactions = 1 
-    EnergyLocal = 0
-    EnergyNow = 0.
-    EnergyLast = 0.
-    EnergyMax = 0.
-    TimeNow = 0.
-    TimeLast = 0.
+    LightLocal = 0
     
     PrevNeutronTime = 0.
     NowNeutronTime = 0.
     f.readline()
     for line in f:
         Energy, ProtonBornTime, NeutronBornTime, Type = line.split('\t')
-        Energy = float(Energy) #/ 1000. # MeV
+        Light = ConvLight(float(Energy)) #/ 1000. # MeV
         ProtonBornTime = float(ProtonBornTime) #ns
         NeutronBornTime = float(NeutronBornTime) #ns
         Type = np.str_(Type) #p/e
@@ -182,18 +175,18 @@ def ReadAndBlur(str):
     
         if(PrevNeutronTime == NowNeutronTime):
             interactions += 1
-            EnergyLocal += Energy
+            LightLocal += Light
         else:
             if(interactions == 1):
-                once.append(EnergyLocal)
+                once.append(LightLocal)
             elif(interactions == 2):
-                twice.append(EnergyLocal)
+                twice.append(LightLocal)
             elif(interactions == 3):
-                triple.append(EnergyLocal)
+                triple.append(LightLocal)
             else:
-                multi.append(EnergyLocal)
+                multi.append(LightLocal)
             interactions = 1
-            EnergyLocal = Energy
+            LightLocal = Light
     
     f.close()
     
@@ -207,14 +200,14 @@ def ReadAndBlur(str):
     #multi.sort()
 
     Particles = []
-    for Energy in once:
-        Particles.append(Energy)
-    for Energy in twice:
-        Particles.append(Energy)      
-    for Energy in triple:
-        Particles.append(Energy)    
-    for Energy in multi:
-        Particles.append(Energy)    
+    for Light in once:
+        Particles.append(Light)
+    for Light in twice:
+        Particles.append(Light)      
+    for Light in triple:
+        Particles.append(Light)    
+    for Light in multi:
+        Particles.append(Light)    
 
     Particles.sort()
 
@@ -223,15 +216,3 @@ def ReadAndBlur(str):
     
     return Hist
 
-#####################
-
-
-#Функция для печати гистограммы в файл
-def print1(Hist, str):
-    N = len(Hist[0])
-    with open(str, "w") as file:
-        for i in range(0, N - 1):
-            file.write(np.str_(Hist[0][i]))
-            file.write("\t")
-            file.write(np.str_(Hist[1][i]))
-            file.write("\n")

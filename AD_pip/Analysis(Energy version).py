@@ -6,65 +6,8 @@ from scipy.integrate import quad
 
 from AD_pip.AD_converter import GetResolution
 from AD_pip.AD_converter import Gauss
-from AD_pip.AD_converter import underE
-from AD_pip.AD_converter import ConvLight
 
-from AD_pip.Constants import BIN_E, MAX_E, MIN_E, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist, BIN_L
-
-def Convert_To_Energy(LightHist):
-    EnergyHist = [[],[]]
-    N = int(MAX_E / BIN_E)
-    for i in range(0, N):
-        EnergyHist[0].append((i + 0.5) * BIN_E)
-        EnergyHist[1].append(0)
-
-    LIndx = 0
-    EIndx = 0
-    N1 = len(LightHist[0])
-    while(EIndx < N - 1)and(LIndx < N1 - 1):
-        LeftLight = LightHist[0][LIndx] - BIN_L * 0.5
-        RightLight = LightHist[0][LIndx] + BIN_L * 0.5
-        
-        LeftEnergy = EnergyHist[0][EIndx] - BIN_E * 0.5
-        RightEnergy = EnergyHist[0][EIndx] + BIN_E * 0.5
-
-        #next Light Bin
-        if(underE(RightLight) < LeftEnergy):
-            LIndx += 1
-            #print(1)
-        #next Energy Bin
-        elif(underE(LeftLight) > RightEnergy):
-            EIndx += 1
-            #print(2)
-        #current Bin
-        else:
-            LeftBord = LeftLight
-            RightBord = RightLight
-            EIndx_ = 0
-            LIndx_ = 0
-
-            if(underE(LeftLight) < LeftEnergy):
-                LeftBord = ConvLight(LeftEnergy)
-                EIndx_ = 1
-                #print(1)
-
-            if(underE(RightLight) > RightEnergy):
-                RightBord = ConvLight(RightEnergy)
-                LIndx_ = 1
-                #print(2)
-
-            k = (RightBord - LeftBord) / (RightLight - LeftLight)
-            #print((RightBord - LeftBord))
-            #print(k)
-            EnergyHist[1][EIndx] += k * LightHist[1][LIndx]
-            
-            if(k == 1)or(LIndx_): 
-                LIndx += 1
-            if(k == 0)or(EIndx_): 
-                EIndx += 1
-
-    return EnergyHist
-
+from AD_pip.Constants import BIN_E, MAX_E, MIN_E, EPS, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist
 
 #Функция для центарльной производной
 def deriv(Hist):
@@ -83,8 +26,7 @@ def deriv(Hist):
 
 
 #Функция возращающая поправку на эффективность детектора для энергиия в МэВ
-def GetEfEnergy(L, h):
-    X = underE(L)
+def GetEfEnergy(X, h):
     N = len(EfHist['E'])
     i = 1
     while((EfHist['E'][i] <= X)and(i < N - 1)):
