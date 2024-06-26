@@ -19,7 +19,7 @@ public:
   
 
 private:
-  G4double fTau = 0.;
+  G4double fTau = 50. * ns;
   
 
 };

@@ -65,7 +65,7 @@ def plotHist(Hist, str):
     DEnergy = RealDeriv(Hist)#deriv(Energy)
 
     figure = plt.figure(figsize=(5, 5))#, dpi = 1000)
-    k2 = 0.8 #1.0
+    k2 = np.max(Energy[1]) / np.max(DEnergy[1]) #1.0
 
     
 
@@ -80,10 +80,10 @@ def plotHist(Hist, str):
 
 
 
-    max2 = 16.5
-    min2 = 0.1
+    max2 = np.max(Energy[0])
+    min2 = 0
 
-    ax.set_ylim(0, 2500)#2 * np.max(DEnergy))
+    ax.set_ylim(0, 2. * np.max(DEnergy[1]))
 
     ax.set_ylabel('Counts', fontsize = 12)
     ax.set_xlabel('Energy, MeV', fontsize=12)

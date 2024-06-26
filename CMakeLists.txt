@@ -6,6 +6,7 @@ find_package(Geant4 REQUIRED ui_all vis_all)
 
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/headers)
+include_directories(${PROJECT_SOURCE_DIR}/data)
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/sources/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/headers/*.hh)
