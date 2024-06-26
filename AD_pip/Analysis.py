@@ -7,7 +7,7 @@ from scipy.integrate import quad
 from AD_pip.AD_converter import GetResolution
 from AD_pip.AD_converter import Gauss
 
-from AD_pip.Constants import BIN_E, MAX_E, MIN_E, EPS, ENERGY_ID, AMOUNT_ID, LEN, KOEF
+from AD_pip.Constants import BIN_E, MAX_E, MIN_E, EPS, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist
 
 #Функция для центарльной производной
 def deriv(Hist):
@@ -24,11 +24,39 @@ def deriv(Hist):
     Amount.append(0.)
     return np.array([Hist[ENERGY_ID],Amount])
 
+
+#Функция возращающая поправку на эффективность детектора для энергиия в МэВ
+def GetEfEnergy(X, h):
+    N = len(EfHist['E'])
+    i = 1
+    while((EfHist['E'][i] <= X)and(i < N - 1)):
+        i += 1
+    k = (EfHist['S'][i] - EfHist['S'][i - 1])/(EfHist['E'][i] - EfHist['E'][i - 1])
+    b = EfHist['S'][i] - k * EfHist['E'][i]
+    sig_C = k * X + b
+    
+    sig_H = 0.
+    if(X <= 3.8):
+        sig_H = 4.3 * math.pow(X, -0.58)
+    elif(X <= 4.0):
+        sig_H = -0.7720612 * X + 4.9162
+    else:
+        sig_H = 4.83 / math.sqrt(X) - 0.587
+
+    k = sig_H / (sig_H + sig_C) * (1. - math.exp(- (sig_H + sig_C)* h))
+    return  1./ k 
+
+###############
+
 #Функция - решение уравнения ГГ 2 рода
 def RealDeriv(Hist):
     DHist = deriv(Hist)
     N = len(DHist[ENERGY_ID])
-    DHist[AMOUNT_ID] *= -1.
+    
+    for i in range(0, N):
+        DHist[AMOUNT_ID][i] *= -1.0 * GetEfEnergy(DHist[ENERGY_ID][i], LEN)
+    
+    #DHist[AMOUNT_ID] *= -1.
     return DHist
 
 
