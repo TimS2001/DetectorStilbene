@@ -26,8 +26,8 @@ int Vis = 0;
 
 //new coments to git 
 
-G4double flux = 10000.0;
-G4double tau = 0.1;
+G4double flux = 1.e7 / s;
+G4double tau = 0.1 * s;
 G4int N = (G4int)(flux * tau);
 
 int main(int argc,char** argv){
@@ -85,7 +85,7 @@ int main(int argc,char** argv){
     G4UImanager* UImanager = G4UImanager::GetUIpointer();
     
     runManager->Initialize();
-    UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
+    //UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
 
     if(ui){
         UImanager->ApplyCommand("/control/execute vis.mac");
