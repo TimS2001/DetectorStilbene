@@ -2,22 +2,29 @@ import math
 import numpy as np
 from scipy.integrate import quad
 
-from AD_pip.Constants import LIGHT_ID, AMOUNT_ID, LEN, BIN_L, MAX_L, MIN_L, B, kk
+from AD_pip.Constants import LIGHT_ID, AMOUNT_ID, LEN, BIN_L, MAX_L, MIN_L, B, pw
 
 def ConvLight(E):
-    return B * (E ** kk)
+    return B * (E ** pw)
 
 def underE(L):
-    return 0.0128 * (L ** 0.631)
+    pw1 = 1 / pw
+    B1 = math.pow(B, -1. / pw)
+    return B1 * math.pow(L, pw1)
 
-def GetResolution(X):
-    if(X <= 0):
+def GetResolution(L):
+    if(L <= 0):
         return 0
         #exeption
     
-    A = 87000
-    B = 38600000
-    Y = math.sqrt(14.29 + A / (X ** 0.947) + B / (X ** 1.893) ) / 100
+    
+    L1 = math.pow(L, 1.5 / pw)
+    B1 = 126 * math.pow(B, 1.5 / pw)
+
+    L2 = math.pow(L, 3 / pw)
+    B2 = 81 * math.pow(B, 3 / pw)
+
+    Y = math.sqrt(14.29 + B1 / L1 + B2 / L2 ) / 100
     return  Y
 
 #Функция гаусса нормированнная для ДИСПЕРСИИ

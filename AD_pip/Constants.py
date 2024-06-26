@@ -13,8 +13,8 @@ LIGHT_ID = 0
 AMOUNT_ID = 1
 LEN = 4. #cm
 
-B = 1.0e3
-kk = 1.585
+B = 990
+pw = 1.594
 
 KOEF = 0.0 #const of Gauss filter
 
