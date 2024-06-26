@@ -1,0 +1,10 @@
+^C:\USERS\WORKING\DESKTOP\WORKPROJECT\DETECTORS\DETECTORSTILBENE\BUILD\CMAKEFILES\7269D49BD7F46A18A7B081EECFF48806\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Working/Desktop/WorkProject/Detectors/DetectorStilbene -BC:/Users/Working/Desktop/WorkProject/Detectors/DetectorStilbene/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Working/Desktop/WorkProject/Detectors/DetectorStilbene/build/DetectorStilbene.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

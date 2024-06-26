@@ -1,0 +1,10 @@
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\Main.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\Main.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\ActionInitialization.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\ActionInitialization.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\Construction.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\Construction.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\CreateLogicalVolume.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\CreateLogicalVolume.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\EnergyDistribution.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\EnergyDistribution.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\EventAction.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\EventAction.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\LightOutput.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\LightOutput.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\RunAction.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\RunAction.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\SteppingAction.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\SteppingAction.obj
+C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\sources\generator.cc;C:\Users\Working\Desktop\WorkProject\Detectors\DetectorStilbene\build\Main.dir\Debug\generator.obj
