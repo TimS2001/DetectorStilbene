@@ -12,9 +12,10 @@
 
 #include "construction.hh"
 
-const G4double Ti = 0.0; // keV
-const int is_DT = 0;
-const int is_MySpect = 0;
+//ion temperature
+const G4double Ti = 20.0; // keV
+const int is_DT = 0; // 1 - DT reaction; 0 - DD - reaction
+const int is_MySpect = 0; // 1 - Uses Energy Distribution; more in headers\EnergyDistribution.hh
 //const G4double K = 0.05;
 
 //std::vector<G4double> GetEnergyDes();
@@ -55,7 +56,7 @@ class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
     G4double Energy_neutron;
     const G4double Energy_DT = (14.1 * MeV);
     
-    const G4double Energy_DD = 6.80 *MeV; //(2.45 * MeV);
+    const G4double Energy_DD = 2.45 *MeV; //(2.45 * MeV);
     const G4double C_DT = 75.1; // sqrt(kEv)
     const G4double C_DD = 35.05;
     MyEnergyDistribution* REnergy = nullptr;

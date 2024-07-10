@@ -1,8 +1,8 @@
 #const
 #Energy_bins
-BIN_L = 10 #light
-MAX_L = 30e3 #light
-MIN_L = 800 #light
+BIN_L = 50 #light
+MAX_L = 100e3 #light
+MIN_L = 10 #light
 BIN_E = 0.05 #MeV
 MAX_E = 18.0 #MeV
 MIN_E = 1.0 #MeV

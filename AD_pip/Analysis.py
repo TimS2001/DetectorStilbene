@@ -12,57 +12,65 @@ from AD_pip.AD_converter import ConvLight
 from AD_pip.Constants import BIN_E, MAX_E, MIN_E, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist, BIN_L
 
 def Convert_To_Energy(LightHist):
+
     EnergyHist = [[],[]]
     N = int(MAX_E / BIN_E)
     for i in range(0, N):
         EnergyHist[0].append((i + 0.5) * BIN_E)
         EnergyHist[1].append(0)
 
-    LIndx = 0
-    EIndx = 0
+    LIndx = 1
+    EIndx = 1
     N1 = len(LightHist[0])
     while(EIndx < N - 1)and(LIndx < N1 - 1):
-        LeftLight = LightHist[0][LIndx] - BIN_L * 0.5
-        RightLight = LightHist[0][LIndx] + BIN_L * 0.5
+        LeftLight = BIN_L * (LIndx - 0.5)
+        RightLight = BIN_L * (LIndx + 0.5)
         
-        LeftEnergy = EnergyHist[0][EIndx] - BIN_E * 0.5
-        RightEnergy = EnergyHist[0][EIndx] + BIN_E * 0.5
+        LeftEnergy = BIN_E * (EIndx - 0.5)
+        RightEnergy = BIN_E * (EIndx + 0.5)
 
         #next Light Bin
-        if(underE(RightLight) < LeftEnergy):
+        if(RightLight <= ConvLight(LeftEnergy)):
             LIndx += 1
-            #print(1)
+
         #next Energy Bin
-        elif(underE(LeftLight) > RightEnergy):
+        elif(LeftLight > ConvLight(RightEnergy)):
             EIndx += 1
-            #print(2)
+
         #current Bin
         else:
+            RightLightMore = 0
+            
             LeftBord = LeftLight
+            if(LeftLight < ConvLight(LeftEnergy)):
+                LeftBord = ConvLight(LeftEnergy)      
+
             RightBord = RightLight
-            EIndx_ = 0
-            LIndx_ = 0
-
-            if(underE(LeftLight) < LeftEnergy):
-                LeftBord = ConvLight(LeftEnergy)
-                EIndx_ = 1
-                #print(1)
-
-            if(underE(RightLight) > RightEnergy):
-                RightBord = ConvLight(RightEnergy)
-                LIndx_ = 1
-                #print(2)
-
+            if(RightLight > ConvLight(RightEnergy)):
+                RightBord = ConvLight(RightEnergy) 
+                RightLightMore = 1   
+            
             k = (RightBord - LeftBord) / (RightLight - LeftLight)
-            #print((RightBord - LeftBord))
-            #print(k)
+            
             EnergyHist[1][EIndx] += k * LightHist[1][LIndx]
             
-            if(k == 1)or(LIndx_): 
-                LIndx += 1
-            if(k == 0)or(EIndx_): 
-                EIndx += 1
 
+            if(RightLightMore):
+                EIndx += 1
+            else:
+                LIndx += 1
+            '''
+            if(LeftLightLess):
+                if(RightLightMore): #Energy inside
+                    EIndx += 1
+                else: #Energy between the rihgt board
+                    LIndx += 1
+            else:
+                if(RightLightMore): #Energy between the left board
+                    EIndx += 1
+                else: #Light inside Energy
+                    LIndx += 1
+            '''
     return EnergyHist
 
 
@@ -301,8 +309,9 @@ def find(Hist):
     errStat = 0.5 * (E / S) ** 2 / P
 
 
-    RS = E * GetResolution(E) / 2.35
-    S = math.sqrt((S * S - RS * RS)) * 1.0 #поправка для большей точности
+    RS = E * GetResolution(ConvLight(E)) / 2.35
+    #S = math.sqrt((S * S - RS * RS)) * 1.0 #поправка для большей точности
+    #S = math.sqrt((S * S)) * 1.0 #поправка для большей точности
     
     if(isDT == 1):
         T = (constDT * S) ** 2

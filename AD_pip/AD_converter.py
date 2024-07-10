@@ -140,6 +140,7 @@ def AddToHist(Particles):
         i += 1
 
     Hist = Blur(np.array([Light, Amount]))
+    #Hist = (np.array([Light, Amount]))
 
     
 

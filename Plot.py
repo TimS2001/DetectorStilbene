@@ -2,11 +2,12 @@ import AD_pip.AD_converter as conv
 import AD_pip.Plotting as plot
 import AD_pip.Analysis as anl
 import numpy as np
+import AD_pip.AD_converter_Energy_version as conv1
 
-str = 'data/detector_data.txt'   
+str = 'data/detector_data.txt' # файл чтения   
 
-Hist = conv.ReadAndBlur(str)
-Hist1 = anl.Convert_To_Energy(Hist)
+#Hist = conv1.ReadAndBlur(str)
+Hist = anl.Convert_To_Energy(conv.ReadAndBlur(str))
 #Hist1 = LGHT.ReadAndBlur(str)
 
 
@@ -25,6 +26,9 @@ def print1(Hist, str):
 print1(Hist, str1)
 #'''
 
-plot.plotHist(Hist, 'MySpect')
-plot.plotHist(Hist1, 'MySpect')
-#plot.plotAndFind(Hist, 'MySpect')
+#plot.plotHist(TmpHist, 'MySpect')
+#plot.plotHist(Hist1, 'MySpect')
+
+#plot.plotHistdiff(Hist, Hist1, 'MySpect')
+
+plot.plotAndFind(Hist, 'MySpect') 
