@@ -6,10 +6,9 @@ from scipy.integrate import quad
 
 from AD_pip.AD_converter import GetResolution
 from AD_pip.AD_converter import Gauss
-from AD_pip.AD_converter import underE
-from AD_pip.AD_converter import ConvLight
+from AD_pip.AD_converter import LightConv, EnergyConv, BIN_L
 
-from AD_pip.Constants import BIN_E, MAX_E, MIN_E, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist, BIN_L
+from AD_pip.Constants import BIN_E, MAX_E, MIN_E, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist 
 
 def Convert_To_Energy(LightHist):
 
@@ -30,11 +29,11 @@ def Convert_To_Energy(LightHist):
         RightEnergy = BIN_E * (EIndx + 0.5)
 
         #next Light Bin
-        if(RightLight <= ConvLight(LeftEnergy)):
+        if(RightLight <= LightConv(LeftEnergy)):
             LIndx += 1
 
         #next Energy Bin
-        elif(LeftLight > ConvLight(RightEnergy)):
+        elif(LeftLight > LightConv(RightEnergy)):
             EIndx += 1
 
         #current Bin
@@ -42,12 +41,12 @@ def Convert_To_Energy(LightHist):
             RightLightMore = 0
             
             LeftBord = LeftLight
-            if(LeftLight < ConvLight(LeftEnergy)):
-                LeftBord = ConvLight(LeftEnergy)      
+            if(LeftLight < LightConv(LeftEnergy)):
+                LeftBord = LightConv(LeftEnergy)      
 
             RightBord = RightLight
-            if(RightLight > ConvLight(RightEnergy)):
-                RightBord = ConvLight(RightEnergy) 
+            if(RightLight > LightConv(RightEnergy)):
+                RightBord = LightConv(RightEnergy) 
                 RightLightMore = 1   
             
             k = (RightBord - LeftBord) / (RightLight - LeftLight)
@@ -92,7 +91,7 @@ def deriv(Hist):
 
 #Функция возращающая поправку на эффективность детектора для энергиия в МэВ
 def GetEfEnergy(L, h):
-    X = underE(L)
+    X = EnergyConv(L)
     N = len(EfHist['E'])
     i = 1
     while((EfHist['E'][i] <= X)and(i < N - 1)):
@@ -309,7 +308,7 @@ def find(Hist):
     errStat = 0.5 * (E / S) ** 2 / P
 
 
-    RS = E * GetResolution(ConvLight(E)) / 2.35
+    RS = E * GetResolution(LightConv(E)) / 2.35
     #S = math.sqrt((S * S - RS * RS)) * 1.0 #поправка для большей точности
     #S = math.sqrt((S * S)) * 1.0 #поправка для большей точности
     

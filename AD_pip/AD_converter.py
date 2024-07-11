@@ -2,30 +2,10 @@ import math
 import numpy as np
 from scipy.integrate import quad
 
-from AD_pip.Constants import LIGHT_ID, AMOUNT_ID, LEN, BIN_L, MAX_L, MIN_L, B, pw
+from AD_pip.Constants import LIGHT_ID, AMOUNT_ID
+from AD_pip.BC501A_EAST import B, pw, LightConv, BIN_L, MAX_L, MIN_L
 
-def ConvLight(E):
-    return B * (E ** pw)
 
-def underE(L):
-    pw1 = 1 / pw
-    B1 = math.pow(B, -1. / pw)
-    return B1 * math.pow(L, pw1)
-
-def GetResolution(L):
-    if(L <= 0):
-        return 0
-        #exeption
-    
-    
-    L1 = math.pow(L, 1.5 / pw)
-    B1 = 126 * math.pow(B, 1.5 / pw)
-
-    L2 = math.pow(L, 3 / pw)
-    B2 = 81 * math.pow(B, 3 / pw)
-
-    Y = math.sqrt(14.29 + B1 / L1 + B2 / L2 ) / 100
-    return  Y
 
 #Функция гаусса нормированнная для ДИСПЕРСИИ
 def Gauss(Ex, sigma):
@@ -165,7 +145,7 @@ def ReadAndBlur(str):
     f.readline()
     for line in f:
         Energy, ProtonBornTime, NeutronBornTime, Type = line.split('\t')
-        Light = ConvLight(float(Energy)) #/ 1000. # MeV
+        Light = LightConv(float(Energy)) #/ 1000. # MeV
         ProtonBornTime = float(ProtonBornTime) #ns
         NeutronBornTime = float(NeutronBornTime) #ns
         Type = np.str_(Type) #p/e
