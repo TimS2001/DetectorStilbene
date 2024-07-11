@@ -34,13 +34,13 @@ class MyDetectorConstruction: public G4VUserDetectorConstruction{
     //////////////////
 
     //constants
-    G4double l = 4 * cm;
+    G4double l = 5.08 * cm;
     G4double M = 100 * cm; //100. * cm; #constant for world scales
     G4ThreeVector scalesWorld = G4ThreeVector(M / 2, M / 2, M); 
     G4double detIR = 0.*cm;        // cylinder inner radius
     G4double detOR = l / 2;        // cylinder outer radius
     G4double detZspan = l;      // cylinder length
-    G4double contThick = 0.3*cm; // container thickness (Aluminium)
+    G4double contThick = 1.6*cm; // container thickness (Aluminium)
 
     G4ThreeVector DetectorPosition = G4ThreeVector(0., 0., 10. * cm); 
     G4double Z = detZspan + 2 * contThick;

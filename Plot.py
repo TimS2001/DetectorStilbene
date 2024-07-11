@@ -9,9 +9,8 @@ str = 'data/detector_data.txt' # файл чтения
 #Hist = conv1.ReadAndBlur(str)
 Hist = anl.Convert_To_Energy(conv.ReadAndBlur(str))
 #Hist1 = LGHT.ReadAndBlur(str)
+###
 
-
-'''
 str1 = 'data/Resp_1.88 MeV.dat'
 def print1(Hist, str):
     N = len(Hist[0])
