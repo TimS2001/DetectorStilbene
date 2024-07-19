@@ -4,14 +4,13 @@ from scipy.stats import chi2
 from scipy.optimize import minimize
 from scipy.integrate import quad
 
-from AD_pip.AD_converter import GetResolution
-from AD_pip.AD_converter import Gauss
-from AD_pip.AD_converter import LightConv, EnergyConv, BIN_L
-
-from AD_pip.Constants import BIN_E, MAX_E, MIN_E, ENERGY_ID, AMOUNT_ID, LEN, KOEF, EfHist 
+#constants
+from AD_pip.Constants import BIN_E, MAX_E, MIN_E, ENERGY_ID, AMOUNT_ID, LEN, EfHist , KOEF
+from AD_pip.AD_converter import BIN_L
+#functions
+from AD_pip.AD_converter import GetResolution, Gauss, LightConv, EnergyConv
 
 def Convert_To_Energy(LightHist):
-
     EnergyHist = [[],[]]
     N = int(MAX_E / BIN_E)
     for i in range(0, N):

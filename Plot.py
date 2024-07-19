@@ -1,8 +1,8 @@
 import AD_pip.AD_converter as conv
 import AD_pip.Plotting as plot
 import AD_pip.Analysis as anl
-import numpy as np
-import AD_pip.AD_converter_Energy_version as conv1
+#import numpy as np
+#import AD_pip.AD_converter_Energy_version as conv1
 
 str = 'data/detector_data.txt' # файл чтения   
 
@@ -31,4 +31,4 @@ plot.plotHist(Hist1, 'MySpect')
 
 #plot.plotHistdiff(Hist, Hist1, 'MySpect')
 
-plot.plotAndFind(Hist, 'MySpect') 
+#plot.plotAndFind(Hist, 'MySpect') 

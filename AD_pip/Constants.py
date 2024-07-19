@@ -9,6 +9,8 @@ LIGHT_ID = 0
 AMOUNT_ID = 1
 LEN = 4. #cms
 
+KOEF = 0.
+
 #cross section for carbon
 import numpy as np
 EfHist = np.genfromtxt('sys_data/Carbon_cross_section.txt', dtype=[('E', '<f8'), ('S', '<f8')])

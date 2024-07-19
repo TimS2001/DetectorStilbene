@@ -2,9 +2,11 @@ import math
 import numpy as np
 from scipy.integrate import quad
 
+#constants
 from AD_pip.Constants import LIGHT_ID, AMOUNT_ID
-from AD_pip.BC501A_EAST import B, pw, LightConv, BIN_L, MAX_L, MIN_L
-
+from AD_pip.BC501A_EAST import BIN_L, MAX_L, MIN_L
+#functions
+from AD_pip.BC501A_EAST import LightConv, EnergyConv, GetResolution
 
 
 #Функция гаусса нормированнная для ДИСПЕРСИИ

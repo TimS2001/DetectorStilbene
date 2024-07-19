@@ -1,11 +1,11 @@
 import math
 
-BIN_L = 5 #light
-MAX_L =  1200  #light
-MIN_L = 10 #light
+BIN_L = 1 #light
+MAX_L = 1000  #light
+MIN_L = 20 #light
 
 def LightConv(Energy):
-    k = [3.285, 103.4, 0.03017, 1.00428]
+    k = [0.231, 0.3, 0.49097, 1.88055]
     Light = k[0] * Energy - k[1] * (1.0 - math.exp(- k[2] * math.pow(Energy, k[3])))
     return Light * 1000
 
