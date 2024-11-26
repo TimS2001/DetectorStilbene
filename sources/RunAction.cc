@@ -3,108 +3,122 @@
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-#include <fstream>
 
+
+#include <string>     // для std::getline
 
 #include "Run.hh"
+#include "Print.hh"
 
-
-
-G4double light(G4double x){
-    G4double Light = 0.;
-    //G4double B = 0.188883;
+void MyRunAction::BeginOfRunAction(const G4Run* aRun){
+    //Сообщаем G4RunManager-у сохранить зерно для генератора случайных чисел
+    //G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+    eventsNumber = aRun->GetNumberOfEventToBeProcessed();
     
-    //G4double E0 = 2.45;
-    //G4double B = E0 / (pow(E0, 1.5) * exp(0.016 * pow(E0,-1.5) - 0.021 * pow(E0, 0.9)));
-    //if(x > 0.1){
-        //Light = B * pow(x, 1.5) * exp(0.016 * pow(x,-1.5) - 0.021 * pow(x, 0.9));
-        //Light = 1./sqrt(2.45) * pow(x, 1.5);//DD
-        //Light = 1./sqrt(14.1) * pow(x, 1.5);//DT
+    if(IsMaster()){
+        time(&current_time);//fix null of calculation time
+        //fFileName = GlobalFileName;// + std::to_string(aRun->GetRunID());
+        
+        // создание и открытие текстового файла
+        G4int cores = G4Threading::G4GetNumberOfCores();
+        std::ofstream file;
+        G4String FileName; 
+        for(int i = 0; i < cores; i++){
+            FileName = fFileName + std::to_string(i) + ".txt";
+            file.open(FileName, std::ofstream::out | std::ofstream::trunc);
+            file.close();
+        }
+    }
 
-        //G4cout << Light << '\n';
-    //}
-    Light = pow(x, 1.5);
-    return Light;
 }
 
-void MyRunAction::BeginOfRunAction(const G4Run*){
-    if(IsMaster())
-        time(&current_time);
+
+
+void MyRunAction::DisplayProgress(G4int eventID){
+    G4int prg_step = ( eventsNumber - eventsNumber%100 ) / 100; // 1% step size
+    if (eventID%prg_step == 0) {                                // if +1% events processed
+        G4int prg_cur = eventID / prg_step;                     // get current step number ( = N of % )
+        G4cout << "Progress: " << prg_cur << "%" << G4endl;     // cout that stuff
+    }
 }
+
+////////////////////////////
+// //write data to file
+void MyRunAction::PrintEventInform(MyMainData* data){
+    if(data->GetParticles()->size() == 0){
+        //data->~MyMainData();
+        return;
+    }
+
+    G4int thrID = G4Threading::G4GetThreadId();
+    G4String FileName = fFileName + std::to_string(thrID) + ".txt";
+    std::ofstream file;
+    file.open(FileName, std::ios::app);
+    
+    if(file.is_open() == 0){
+        std::cout << "err to open file" << '\n';
+    }  
+    
+    std::vector<MyParticleData*>* Secondaries = data->GetParticles();
+    size_t SecondariesSize = Secondaries->size();
+    G4int eventID = data->GetNumberOfEvent();
+
+    for(int m = 0; m < int(SecondariesSize); m ++){
+        MyParticleData* Secondary = Secondaries->at(m);
+        G4String str = MyPrintGetStr(Secondary, eventID);
+        file << str;
+        
+    }
+    file.close();
+    //Надеюсь здесь не будет ошибки
+    //освобождаем в eventAction
+    data->~MyMainData();
+    data = nullptr;
+}
+
+
 
 
 void MyRunAction::EndOfRunAction(const G4Run*){
+    if(IsMaster()){
+        ////////////////////////////
+        //write time of calculatrion
+        std::time_t tmp_time = time(NULL);
+        time(&tmp_time);
+        tmp_time -= current_time;
 
-
-        //add data from threads to global data
-        if(Ddata->size() != 0){
-            fdata->push_back(Ddata);
-        }
-
-        if(IsMaster()){
-            ////////////////////////////
-            //write time of calculatrion
-            std::time_t tmp_time = time(NULL);
-            time(&tmp_time);
-            tmp_time -= current_time;
-
-            int hours = int(tmp_time / 3600);
-            int minutes = int((tmp_time % 3600) / 60);
-            int seconds = int((tmp_time % 3600) % 60);
-            std::cout << '\n' << hours << " hours, " << minutes << " minutes, " << seconds << "seconds\n";   
-            ////////////////////////////
-            
-            ////////////////////////////
-            //write data to file
-            std::ofstream file;
-            file.open(fFileName);
-            if(file.is_open() == 0){
-                std::cout << "err to open file" << '\n';
-            }    
-            //file.open(fFileName);
-            file << "Energy_MeV" << '\t' << "BornTime_ns" << '\t' << "MainTime_ns" << '\t' << "Type" << '\n';
-            //Convertor = new MyLightConvertor;
-            
-            size_t threads = fdata->size();//number of threads
-            G4double lastTime = 0.;//should change NeutronBornTime for Next thread
-            for(int i = 0; i < threads; i++){
-                
-                const std::vector<MyMainData*>* MainParticles = fdata->at(i);//collection of neutrons in current thread
-                size_t events = MainParticles->size();//size of neutrons in current thread
-                
-                for(int j = 0; j < events; j++){
-                    
-                    MyMainData* MainParticle = MainParticles->at(j);
-                
-                    G4double mainBornTime = MainParticle->GetBornTime();
-                    
-                    std::vector<MySecondaryParticlesData*>* Secondaries = MainParticle->GetParticles();
-                    size_t SecondariesSize = Secondaries->size();
-                    for(int m = int(SecondariesSize) - 1; m >= 0; m--){
-                        MySecondaryParticlesData* Secondary = Secondaries->at(m);
-                    
-                        G4double energyDeposittion = Secondary->GetEnergy();
-                        G4double secondaryBornTime = Secondary->GetBornTime();
-                        G4String Name = Secondary->GetName();
-
-
-                        file << round(energyDeposittion / MeV * 1000) / 1000. << '\t';
-                        file << round(secondaryBornTime * 10. / ns) / 10. << '\t';
-                        file << round(mainBornTime * 10. / ns) / 10. << '\t'; 
-                        file << Name << '\n';
-                        //file << light(tmp[j]) << "\n";
-                    }
-                
-                }
-                if(events != 0){
-                    lastTime = MainParticles->at(events - 1)->GetBornTime();//write time of last event
-                }
+        int hours = int(tmp_time / 3600);
+        int minutes = int((tmp_time % 3600) / 60);
+        int seconds = int((tmp_time % 3600) % 60);
+        std::cout << '\n' << hours << " hours, " << minutes << " minutes, " << seconds << "seconds\n";   
+        
+        
+        ////////////////////////////   
+        //печать в главный файл
+        std::ofstream Mainfile;
+        G4String FileName = fFileName + ".txt"; //main file
+        Mainfile.open(FileName);
+        G4String str = MyPrintInit();
+        Mainfile << str;
+        
+        
+        G4int cores = G4Threading::G4GetNumberOfCores();
+        for(int i = 0; i < cores; i++){
+            FileName = fFileName + std::to_string(i) + ".txt";
+            std::ifstream Localfile;
+            Localfile.open(FileName);
+            G4String LocalLine = "";
+            while(std::getline(Localfile, LocalLine)){
+                Mainfile << LocalLine << '\n';
             }
+            Localfile.close();
+            int status = remove(FileName);
+        }
+        
 
-            file.close();
     }
 }
 
 G4Run* MyRunAction::GenerateRun(){
-    return new MyRun(Ddata);
+    return new MyRun();
 }

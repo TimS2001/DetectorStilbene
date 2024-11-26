@@ -8,20 +8,13 @@
 
 class MyEventAction : public G4UserEventAction{
 public:
-  MyEventAction(G4double tau) {
-    fTau = tau;
-  }
+  MyEventAction() = default;
   ~MyEventAction() = default;
 
   void BeginOfEventAction(const G4Event* event) override;
   void EndOfEventAction(const G4Event* event) override;
-
-  
-
 private:
-  G4double fTau = 50. * ns;
-  
-
+  int fPercentNow = 1;
 };
 
 #endif

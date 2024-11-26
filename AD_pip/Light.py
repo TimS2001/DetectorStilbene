@@ -163,9 +163,9 @@ def ReadAndBlur(str):
     NowNeutronTime = 0.
     f.readline()
     for line in f:
-        Energy, ProtonBornTime, NeutronBornTime, Type = line.split('\t')
+        #EventTime	Type	Energy_MeV
+        NeutronBornTime, Type, Energy = line.split('\t')
         Light = ConvLight(float(Energy)) #/ 1000. # MeV
-        ProtonBornTime = float(ProtonBornTime) #ns
         NeutronBornTime = float(NeutronBornTime) #ns
         Type = np.str_(Type) #p/e
         PrevNeutronTime = NowNeutronTime

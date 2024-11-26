@@ -12,9 +12,9 @@
 
 #include "construction.hh"
 
-const G4double Ti = 0.0; // keV
+const G4double Ti = 26.1; // keV
 const int is_DT = 0;
-const int is_MySpect = 0;
+const int is_MySpect = 1;
 //const G4double K = 0.05;
 
 //std::vector<G4double> GetEnergyDes();
@@ -55,7 +55,7 @@ class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
     G4double Energy_neutron;
     const G4double Energy_DT = (14.1 * MeV);
     
-    const G4double Energy_DD = 6.80 *MeV; //(2.45 * MeV);
+    const G4double Energy_DD = 2.1 *MeV; //(2.45 * MeV);
     const G4double C_DT = 75.1; // sqrt(kEv)
     const G4double C_DD = 35.05;
     MyEnergyDistribution* REnergy = nullptr;

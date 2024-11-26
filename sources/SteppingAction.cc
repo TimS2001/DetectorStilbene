@@ -16,28 +16,9 @@ MySteppingAction::MySteppingAction(MyDetectorConstruction* detConstruction)  : f
 // Collect energy and track length step by step
 void MySteppingAction::UserSteppingAction(const G4Step* step){
     G4String name = step->GetTrack()->GetDefinition()->GetParticleName();
-    //MyRun* runData = static_cast<MyRun*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-    //runData->UpdateLocalTime(name, 2);
-    //G4double Energy = step->GetPreStepPoint()->GetKineticEnergy();
-    //std::cout << name << ' ' << Energy << '\n';
-
-    //update Time (only once times)
-    if((name == "neutron")||(name == "gamma")){
-        const G4VPhysicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
-        const G4VPhysicalVolume* fDetVolume = fDetConstruction->GetDetector();
-    
-        //check detector volume
-        if(volume != fDetVolume){
-            return;
-        }
-
-        G4double time = step->GetPreStepPoint()->GetGlobalTime();
-        MyRun* runData = static_cast<MyRun*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-        runData->UpdateLocalTime(name, time);//(to other times it doesn't work)
-        //std::cout << 1;
-    }
+    G4double charge = step->GetTrack()->GetDefinition()->GetPDGCharge();
     //collect inform
-    else if((name == "proton")||(name == "e-")){
+    if(name == "proton"){
         
         // get volume of the current step
         const G4VPhysicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
@@ -50,20 +31,18 @@ void MySteppingAction::UserSteppingAction(const G4Step* step){
 
         //parameters
         G4double bornTime = step->GetPreStepPoint()->GetGlobalTime();
-        G4double energy = step->GetPreStepPoint()->GetKineticEnergy();
+        G4double FulEnergy =step->GetPreStepPoint()->GetKineticEnergy(); //step->GetTotalEnergyDeposit();
+        G4int FulEnergy = step->GetTrack()->GetTrackID(); //step->GetTotalEnergyDeposit();
         
+        //step->GetTrack()->SetTrackStatus(fStopAndKill);
         
-        if(energy <= 0.001){
-            return;
-        }
+        //if(energy <= 0.1){
+        //    return;
+        //}
         MyRun* runData = static_cast<MyRun*> (G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-        //std::cout << 3;
-        if(runData->AddSecondary(energy, bornTime, name) == -1){
-            //std::cout << step->GetTrack()->GetParentID() << '\n';
 
-        }
+        runData->AddSecondary(FulEnergy, name, bornTime);//записываем энергию оставленную в чувствительной части  
         
         //kill
-        step->GetTrack()->SetTrackStatus(fStopAndKill);
     }
 }

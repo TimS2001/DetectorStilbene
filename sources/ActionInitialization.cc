@@ -7,11 +7,9 @@
 
 
 
-ActionInitialization::ActionInitialization(MyDetectorConstruction* Det, G4double tau)//, G4String fileName)
-{
+ActionInitialization::ActionInitialization(MyDetectorConstruction* Det){
+    //fN = N;
     fDetVolume = Det;
-    fdata = new std::vector<std::vector<MyMainData*>*>();
-    fTau = tau;
 }
 
 
@@ -19,10 +17,10 @@ void ActionInitialization::Build() const {
     MyPrimaryGenerator *generator = new MyPrimaryGenerator(fDetVolume);
     SetUserAction(generator);
 
-    MyRunAction* runAction = new MyRunAction(fdata);
+    MyRunAction* runAction = new MyRunAction();
     SetUserAction(runAction);
 
-    MyEventAction *eventAction = new MyEventAction(fTau); 
+    MyEventAction *eventAction = new MyEventAction(); 
     SetUserAction(eventAction);
 
     SetUserAction(new MySteppingAction(fDetVolume));
@@ -30,6 +28,6 @@ void ActionInitialization::Build() const {
 }
 
 void ActionInitialization::BuildForMaster() const {	
-    MyRunAction* runAction = new MyRunAction(fdata);
-    SetUserAction(runAction);	
+    MyRunAction* runAction = new MyRunAction();
+    SetUserAction(runAction);
 }	

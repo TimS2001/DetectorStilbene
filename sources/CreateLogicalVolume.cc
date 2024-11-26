@@ -39,11 +39,15 @@ G4LogicalVolume* MyDetectorConstruction::CreateStilbeneDetector(){
 
     //
     G4NistManager *nist = G4NistManager::Instance();
-    G4Material* detMat = nist->FindOrBuildMaterial("G4_STILBENE");
+    
+    //G4Material* XyleneMat = nist->FindOrBuildMaterial("G4_XYLENE");
+    G4Material* StilbeneMat = nist->FindOrBuildMaterial("G4_STILBENE");
+    //Xylen
+
     //
 
     G4Tubs* solidDet = new G4Tubs("DetectorSolid", detIR, detOR, 0.5 * detZspan, 0. *deg, 360. *deg); 
-    return new G4LogicalVolume(solidDet, detMat, "DetectorLogic");
+    return new G4LogicalVolume(solidDet, StilbeneMat, "DetectorLogic");
 }
 
 //пустой мир

@@ -16,65 +16,51 @@
 
 class MyRun : public G4Run{
 public:
-  MyRun(std::vector<MyMainData*> *data) : fdata{data} {}
-  ~MyRun() = default;
+  MyRun() = default;
+  ~MyRun(){
+    assert(fMainParticleData != NULL);
+    delete fMainParticleData;
+  };
   
-  //add event to events data (protons data)
-  int AddSecondary(G4double Energy, G4double SecondaryBornTime, G4String Name){
-    G4double RealSecondaryBornTime = SecondaryBornTime - fZeroTimeInDet;
-    
-    if(MainParticle == nullptr){
-      //std::cout << "error";
-      return -1;
-    }
-    
-    MySecondaryParticlesData* Secondary = new MySecondaryParticlesData(Energy, RealSecondaryBornTime, Name);
-    MainParticle->Add(Secondary);
-    return 0;
+
+  //add event to events data (secondary particles data)
+  void AddSecondary(G4double Energy, G4String Name, G4double Time){   
+    MyParticleData* Secondary = new MyParticleData(Energy, Name, Time);
+    fMainParticleData->Add(Secondary);
+    return;
   }
 
-  //add events to data file 
-  void FillAndReset(){
-    fZeroTimeInDet = 0.;
-    
-    if(MainParticle == nullptr){
-      return;
-    }
-    size_t size = MainParticle->GetParticles()->size();
-    if(size == 0){ 
-        delete MainParticle;
-        MainParticle = nullptr;
-        return;
-    }
-    fdata->push_back(MainParticle);
-    MainParticle = nullptr;
-  }
-
-  //localTime - event when neutron move on detector 
-  void UpdateLocalTime(G4String Name, G4double ZeroTimeInDet){
-    if(fZeroTimeInDet != 0){
-      return;
-    }
-    MainParticle = new MyMainData(Name, fMainBornTime);
-    fZeroTimeInDet = ZeroTimeInDet;
+  MyMainData* GetData(){
+    return fMainParticleData;
   }
   
+  void Reset(){
+    if(fMainParticleData != nullptr){
+      G4MUTEXLOCK(&mutex );  
+      fMainParticleData->~MyMainData();  
+      fMainParticleData = nullptr;
+      G4MUTEXUNLOCK(&mutex );
+    }
+  }
+
   //global time - event when neutron was borned
-  void UpdateGlobalTime(G4double neutronBornTime){
-    fMainBornTime += neutronBornTime;
-    if(fMainBornTime > MaxTime){
-      fMainBornTime -= MaxTime;
+  void UpdateEvent(){
+    fTimes += 1;
+    if(fTimes > MaxTime){
+      fTimes -= MaxTime;
     }
+    if(fMainParticleData != nullptr){
+      Reset();
+    }
+    fMainParticleData = new MyMainData(fTimes);
   }
-
 
 
 private:
-  G4double MaxTime = 50000. * ns;
-  G4double fZeroTimeInDet = 0.;
-  G4double fMainBornTime = 0.;
-  MyMainData* MainParticle = nullptr;
-  std::vector<MyMainData*>* fdata = nullptr;//data to write in file
+  G4double MaxTime = 10000; //constant just to good writing
+  G4int fTimes = 0.;
+  G4Mutex mutex = G4MUTEX_INITIALIZER;
+  MyMainData* fMainParticleData = nullptr;
 };
 
 #endif

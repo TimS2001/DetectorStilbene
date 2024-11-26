@@ -10,23 +10,14 @@
 
 class ActionInitialization : public G4VUserActionInitialization {
     public:
-    ActionInitialization(MyDetectorConstruction*, G4double);
+    ActionInitialization(MyDetectorConstruction* Detector_Volume);
     ~ActionInitialization(){
-        size_t size = fdata->size();
-        for(int i = 0; i < size; i++){
-           fdata->at(i)->clear();
-        }
-        fdata->clear();
     }
 
     virtual void Build() const;
     virtual void BuildForMaster() const;
 private:
-    //vector cores[events[parameters]]
-    //G4String fFileName;
-    std::vector<std::vector<MyMainData*>*> *fdata = nullptr;
-    MyDetectorConstruction* fDetVolume = nullptr;
-    G4double fTau = 0.;
+    MyDetectorConstruction* fDetVolume = nullptr; //
 };
 
 

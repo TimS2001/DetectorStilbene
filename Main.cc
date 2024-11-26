@@ -25,8 +25,12 @@
 int Vis = 0;
 
 //new coments to git 
+//1e9 - DT -1 
+//2.5e8 - DT -2
+//3.89e5
+//1.11e5
 
-G4double flux = 5.e6 / s;
+G4double flux = 1e6 / s;
 G4double tau = 0.1 * s;
 G4int N = (G4int)(flux * tau);
 
@@ -40,7 +44,7 @@ int main(int argc,char** argv){
     //Construct	the	run	manager	
     #ifdef G4MULTITHREADED
         G4MTRunManager* runManager = new G4MTRunManager;
-        runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
+        runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores() - 1);
     #else
         G4RunManager* runManager = new G4RunManager;
     #endif
@@ -60,7 +64,7 @@ int main(int argc,char** argv){
 
     //actionInit
     /////////////////////////////////////
-    runManager->SetUserInitialization(new ActionInitialization(detConstruction, 1./ flux));
+    runManager->SetUserInitialization(new ActionInitialization(detConstruction));
     /////////////////////////////////////
 
 
@@ -88,7 +92,7 @@ int main(int argc,char** argv){
     //UImanager->ApplyCommand("/process/had/particle_hp/use_NRESP71_model true");
 
     if(ui){
-        UImanager->ApplyCommand("/control/execute vis.mac");
+        UImanager->ApplyCommand("control/execute ../vis.mac");
         ui->SessionStart();
         
     }else{

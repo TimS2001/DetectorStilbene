@@ -5,60 +5,61 @@
 #include "G4UnitsTable.hh"
 
 
-class MySecondaryParticlesData{
+class MyParticleData{ // data at one particle
     public:
-    MySecondaryParticlesData(G4double Energy,G4double BornTime, G4String Name){
+    MyParticleData(G4double Energy, G4String Name, G4double Time){
         fEnergy = Energy;
-        fBornTime = BornTime;
         fName = Name;
+        fTime = Time;
     }
 
     G4double GetEnergy(){
         return fEnergy;
     }
 
-    G4double GetBornTime(){
-        return fBornTime;
-    }
-
     G4String GetName(){
         return fName;
     }
 
+    G4double GetTime(){
+        return fTime;
+    }
+
     private:
+    G4double fTime = 0;
     G4double fEnergy = 0;
-    G4double fBornTime = 0;
     G4String fName = "";
 };
 
 
 
-class MyMainData{
+class MyMainData{ // class that have data about all particles at one event (by one neutron)
     public:
-    MyMainData(G4String Name, G4double BornTime){
-        fName = Name;
-        fBornTime = BornTime;
-        particles = new std::vector<MySecondaryParticlesData*>();
+    MyMainData(G4int numberOfEvent){
+        fnumberOfEvent = numberOfEvent;
+        particles = new std::vector<MyParticleData*>();
     }
     ~MyMainData(){
         if(particles != nullptr){
             particles->clear();
+            delete particles;
+            particles = nullptr;
+            fnumberOfEvent = 0;
         }
     }
-    void Add(MySecondaryParticlesData* partData){
+    void Add(MyParticleData* partData){
         particles->push_back(partData);
     }
-    G4double GetBornTime(){
-        return fBornTime;
+    G4int GetNumberOfEvent(){
+        return fnumberOfEvent;
     }
-    std::vector<MySecondaryParticlesData*>* GetParticles(){
+    std::vector<MyParticleData*>* GetParticles(){
         return particles;
     }
 
     private:
-    std::vector<MySecondaryParticlesData*>* particles= nullptr;
-    G4double fBornTime = 0;
-    G4String fName = "";
+    std::vector<MyParticleData*>* particles= nullptr;
+    G4int fnumberOfEvent = 0;
 };
 
 #endif
